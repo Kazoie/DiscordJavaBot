@@ -11,9 +11,8 @@ public class DiscordBot {
 
     public static void main(String[] args) throws LoginException {
         //Main CLass to run your bot
-        final String token = "your token";
+        final String token = "yourToken";
         JDABuilder builder = JDABuilder.createDefault(token);
-
         JDA jda =builder
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES)
                 .addEventListeners(
@@ -22,7 +21,9 @@ public class DiscordBot {
                 .build();
 
 
-        jda.upsertCommand("raider-io","Donne des informations concernant le joueur(Ysondre)").setGuildOnly(true).queue();
+        jda.upsertCommand("raider-io-character","Donne des informations concernant le joueur(Ysondre)").setGuildOnly(true).queue();
+
+
 
     }
 }
