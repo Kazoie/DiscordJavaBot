@@ -12,7 +12,7 @@ public class DiscordBot {
 
     public static void main(String[] args) throws LoginException {
         //Main CLass to run your bot
-        final String token = "MTA2ODYxNjExMzY4MTg2Njg4Mw.GuzUIm.FoB_Vn_26KigFQIWZ2pp0zVpLy6iIB2h7Es9VQ";
+        final String token = "YourToken";
         JDABuilder builder = JDABuilder.createDefault(token);
 
         JDA jda =builder
