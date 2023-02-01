@@ -110,175 +110,61 @@ public class AllEventListeners extends ListenerAdapter {
                         //Part to get the mythic + score (float)
                         JsonArray array = object.get("mythic_plus_scores_by_season").getAsJsonArray();
                         JsonObject item = array.get(0).getAsJsonObject().get("scores").getAsJsonObject();
+
                         float dps,heal,tank;
                         dps = item.get("dps").getAsFloat();
                         heal = item.get("healer").getAsFloat();
                         tank = item.get("tank").getAsFloat();
 
-                        Triple<Integer, Integer, Integer> triplet = new Triple<Integer, Integer, Integer>((int) dps,(int)heal,(int)tank);
-
                         //SECOND REQUEST TREATMENT
                         String infoRank = reponse2.toString();
                         JsonObject object2 = new JsonParser().parse(infoRank).getAsJsonObject();
                         object2 =  object2.get("mythic_plus_ranks").getAsJsonObject();
+
                         JsonObject objectDPS = null;
                         JsonObject objectHeal = null;
                         JsonObject objectTank = null;
 
-                        if(object2.get("class_dps")!=null)objectDPS = object2.get("class_dps").getAsJsonObject();
-                        if(object2.get("class_healer")!=null)objectHeal = object2.get("class_healer").getAsJsonObject();
-                        if(object2.get("class_tank")!=null)objectTank = object2.get("class_tank").getAsJsonObject();
+                        String[] tab = new String[]{"class_dps","class_healer","class_tank"};
+                        for (int i = 0; i < tab.length; i++) {
+                            if(object2.get(tab[i])!=null) {
+                                switch(i){
+                                    case 0:objectDPS = object2.get(tab[i]).getAsJsonObject();
+                                    break;
+                                    case 1:objectHeal =object2.get(tab[i]).getAsJsonObject();
+                                    break;
+                                    case 2: objectTank =object2.get(tab[i]).getAsJsonObject();
+                                }
+                            }
+                        }
                         int world,region,realm; // variable to provide rankings according to his ranks
+                        String message;
+                        message = "Le joueur "+object.get("name") + " a une cote mythique : ";
 
-                        // DPS PART
-
-                        //Switch can't accept tuple so i'm gonna improvise
-                        //switch (triplet) {
-                        //}
-
-
-                        //DPS ONLY
-                        if (dps != 0 && tank == 0 && heal == 0) {
+                        if(dps >0) {
                             world = objectDPS.get("world").getAsInt();
                             region = objectDPS.get("region").getAsInt();
                             realm = objectDPS.get("realm").getAsInt();
-
-                            //reply
-                            event.reply("Le joueur "+object.get("name") + " a une cote mythique : "
-                                    + "\n DPS : "+dps + " avec le classement suivant, World : "+world + " Region : "+region + " Royaume : "+realm
-                                    + "\n Healer : "+heal
-                                    + "\n Tank : "+tank).queue();
+                            message += "\n DPS : "+dps + " avec le classement suivant, World : "+world + " Region : "+region + " Royaume : "+realm;
                         }
-
-                        // TANK PART
-
-                        //TANK ONLY
-                        if (tank != 0 && dps == 0 && heal == 0) {
-                            world = objectTank.get("world").getAsInt();
-                            region = objectTank.get("region").getAsInt();
-                            realm = objectTank.get("realm").getAsInt();
-                            //reply
-                            event.reply("Le joueur "+object.get("name") + " a une cote mythique : "
-                                    + "\n DPS : "+dps
-                                    + "\n Healer : "+heal
-                                    + "\n Tank : "+tank + " avec le classement suivant, World : "+world + " Region : "+region + " Royaume : "+realm
-                            ).queue();
-                        }
-
-                        //DPS & TANK
-                        if (heal ==0 && dps !=0 && tank !=0){
-                            //local variable in case of the player have different spec with scores
-
-                            world = objectDPS.get("world").getAsInt();
-                            region = objectDPS.get("region").getAsInt();
-                            realm = objectDPS.get("realm").getAsInt();
-
-                            int worldtank, regiontank, realmtank;
-                            worldtank = objectTank.get("world").getAsInt();
-                            regiontank = objectTank.get("region").getAsInt();
-                            realmtank = objectTank.get("realm").getAsInt();
-
-
-                            //reply
-                            event.reply("Le joueur "+object.get("name") + " a une cote mythique : "
-                                    + "\n DPS : "+dps + " avec le classement suivant, World : "+world + " Region : "+region + " Royaume : "+realm
-                                    + "\n Healer : "+heal
-                                    + "\n Tank : "+tank + " avec le classement suivant, World : "+worldtank + " Region : "+regiontank + " Royaume : "+realmtank
-                            ).queue();
-                        }
-
-                        // HEAL PART
-
-                        //HEAL ONLY
-                        if(heal !=0 && tank == 0 && dps == 0) {
+                        if (heal > 0) {
                             world = objectHeal.get("world").getAsInt();
                             region = objectHeal.get("region").getAsInt();
                             realm = objectHeal.get("realm").getAsInt();
-                            //reply
-                            event.reply("Le joueur "+object.get("name") + " a une cote mythique : "
-                                    + "\n DPS : "+dps
-                                    + "\n Healer : "+heal + " avec le classement suivant, World : "+world + " Region : "+region + " Royaume : "+realm
-                                    + "\n Tank : "+tank
-                            ).queue();
+                            message +=  "\n Healer : "+heal + " avec le classement suivant, World : "+world + " Region : "+region + " Royaume : "+realm;
                         }
-
-                        //HEAL & TANK
-                        if (heal !=0 && dps ==0 && tank !=0){
-                            //local variable in case of the player have different spec with scores
-                            int worldtank, regiontank, realmtank;
-
-                            worldtank = objectTank.get("world").getAsInt();
-                            regiontank = objectTank.get("region").getAsInt();
-                            realmtank = objectTank.get("realm").getAsInt();
-                            int worldheal, regionheal, realmheal;
-
-                            worldheal = objectHeal.get("world").getAsInt();
-                            regionheal = objectHeal.get("region").getAsInt();
-                            realmheal = objectHeal.get("realm").getAsInt();
-                            //reply
-                            event.reply("Le joueur "+object.get("name") + " a une cote mythique : "
-                                    + "\n DPS : "+dps
-                                    + "\n Healer : "+heal + " avec le classement suivant, World : "+worldheal + " Region : "+regionheal + " Royaume : "+realmheal
-                                    + "\n Tank : "+tank + " avec le classement suivant, World : "+worldtank + " Region : "+regiontank + " Royaume : "+realmtank
-                            ).queue();
+                        if (tank >0) {
+                            world = objectTank.get("world").getAsInt();
+                            region = objectTank.get("region").getAsInt();
+                            realm = objectTank.get("realm").getAsInt();
+                            message += "\n Tank : "+tank + " avec le classement suivant, World : "+world + " Region : "+region + " Royaume : "+realm;
                         }
-
-                        //HEAL & DPS
-                        if (heal !=0 && dps !=0 && tank ==0){
-                            //local variable in case of the player have different spec with scores
-
-
-                            world = objectDPS.get("world").getAsInt();
-                            region = objectDPS.get("region").getAsInt();
-                            realm = objectDPS.get("realm").getAsInt();
-
-                            int worldheal, regionheal, realmheal;
-
-                            worldheal = objectHeal.get("world").getAsInt();
-                            regionheal = objectHeal.get("region").getAsInt();
-                            realmheal = objectHeal.get("realm").getAsInt();
-
-                            //reply
-                            event.reply("Le joueur "+object.get("name") + " a une cote mythique : "
-                                    + "\n DPS : "+dps + " avec le classement suivant, World : "+world + " Region : "+region + " Royaume : "+realm
-                                    + "\n Healer : "+heal + " avec le classement suivant, World : "+worldheal + " Region : "+regionheal + " Royaume : "+realmheal
-                                    + "\n Tank : "+tank
-                            ).queue();
-                        }
-
-                        // PART EVERYTHING
-
-                        if (heal !=0 && dps !=0 && tank !=0){
-                            //local variable in case of the player have different spec with scores
-
-
-                            world = objectDPS.get("world").getAsInt();
-                            region = objectDPS.get("region").getAsInt();
-                            realm = objectDPS.get("realm").getAsInt();
-
-                            int worldtank, regiontank, realmtank;
-                            worldtank = objectTank.get("world").getAsInt();
-                            regiontank = objectTank.get("region").getAsInt();
-                            realmtank = objectTank.get("realm").getAsInt();
-
-                            int worldheal, regionheal, realmheal;
-                            worldheal = objectHeal.get("world").getAsInt();
-                            regionheal = objectHeal.get("region").getAsInt();
-                            realmheal = objectHeal.get("realm").getAsInt();
-
-                            //reply
-                            event.reply("Le joueur "+object.get("name") + " a une cote mythique : "
-                                    + "\n DPS : "+dps + " avec le classement suivant, World : "+world + " Region : "+region + " Royaume : "+realm
-                                    + "\n Healer : "+heal + " avec le classement suivant, World : "+worldheal + " Region : "+regionheal + " Royaume : "+realmheal
-                                    + "\n Tank : "+tank + " avec le classement suivant, World : "+worldtank + " Region : "+regiontank + " Royaume : "+realmtank
-                            ).queue();
-                        }
+                        event.reply(message).queue();
 
                         // case no mythic score
                         if (heal == 0.0 && tank == 0.0 && dps ==0.0) {
                             event.reply("Il semblerait que ce joueur ne possède aucune cote mythique, Je ne fournirai donc aucune information").queue();
                         }
-
 
                     } else event.reply("Erreur dans l'une des deux requètes : REQ1 : "+req.getResponseCode() + " REQ2 : "+req2.getResponseCode()).queue();
 
