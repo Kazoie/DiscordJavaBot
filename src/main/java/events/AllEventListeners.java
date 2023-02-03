@@ -18,8 +18,8 @@ public class AllEventListeners extends ListenerAdapter {
     //Main class, providing information about the character with 1st command (not optimized yet) and mythic score + ranking with 2nd
 
     //Our Global dataBase, used to stock /register command player and supposed to be stocked into a txt
-    HashMap<String,List<int>> scoreBase = new HashMap<String, List<int>>();
-    HashMap<String,HashMap<String,int>> dataBase = new HashMap<String, HashMap<String,int>>();
+    HashMap<String,ArrayList<Integer>> scoreBase = new HashMap<String, ArrayList<Integer>>();
+    HashMap<String,HashMap<String,ArrayList<Integer>>> dataBase = new HashMap<String, HashMap<String,ArrayList<Integer>>>();
 
     /*
     The database is build like this =
@@ -27,17 +27,16 @@ public class AllEventListeners extends ListenerAdapter {
     name => name of a specific character
     m+ => a list of int sorted to show the progression of mythic+ score
      */
-
     /////////////////////////////////////////////////////
-    //     |         name           |  List<Score>m+   //
+    //     |         name           |  List<int>m+     //
     //     |------------------------|------------------//
-    // id  |         name           |  List<Score>m+   //
+    // id  |         name           |  List<int>m+     //
     //     |------------------------|------------------//
-    //     |         name           |  List<Score>m+   //
+    //     |         name           |  List<int>m+     //
     /////////////////////////////////////////////////////
     //Illustration of the database
 
-    final static String file = "dataBase.txt";
+    final static String file = "dataBase.txt"; // used after to write database in txt file
 
     public void mythicplus(SlashCommandInteractionEvent event){
         OptionMapping option1 = event.getOption("realm");
@@ -240,10 +239,32 @@ public class AllEventListeners extends ListenerAdapter {
             throw new RuntimeException(e);
         }
     }
-
     public void register(SlashCommandInteractionEvent event) {
     String id = (event.getMember().getId());
-    //TODO
+    ArrayList<Integer> score = new ArrayList<Integer>();
+    OptionMapping option1;
+    String name = null;
+    if(event.getOption("name")!=null){
+        option1 = event.getOption("name");
+        name = option1.getAsString();
+        scoreBase.put(name,score);
+    } else scoreBase.put(null,score);
+    dataBase.put(id,scoreBase);
+        String msgName = "";
+        if(name != null){
+            msgName = ", le personnage "+name+" a été ajouté";
+    }
+    event.reply("Succès ! Votre id est enregistré"+msgName).queue();
+
+        //TODO IMPORTANT
+        //CREATING A FUNCTION TO GET THE SCORE OF M+ TO FILL THE 1ST FIELD OF ARRAYLIST (MAXSIZE 5)
+        //CREATING A FUNCTION TO WRITE INTO A TXT FILE (maybe loop to do it all the 10minutes ?)
+
+        System.out.println(scoreBase.toString());
+        System.out.println(dataBase.toString());
+    }
+    public void update(SlashCommandInteractionEvent event){
+        //check ID
     }
 
     @Override
@@ -265,6 +286,11 @@ public class AllEventListeners extends ListenerAdapter {
             case ("register")   :
                 register(event);
                 break;
+
+                //case to update the list and have a real time tracking
+            //case ("DataUpdate") :
+            //    update(event);
+            //    break;
         }
 
 
