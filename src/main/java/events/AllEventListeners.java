@@ -243,6 +243,7 @@ public class AllEventListeners extends ListenerAdapter {
 
     public void register(SlashCommandInteractionEvent event) {
     String id = (event.getMember().getId());
+    //TODO
     }
 
     @Override

@@ -29,10 +29,8 @@ public class DiscordBot {
         OptionData option1 = new OptionData(OptionType.STRING, "realm", "Name of the realm", true);
         OptionData option2 = new OptionData(OptionType.STRING, "player", "Name of player", true);
         jda.upsertCommand("mythicplus", "Show the mythic + score of the current player").addOptions(option1,option2).setGuildOnly(false).queue();
-
         OptionData option3 = new OptionData(OptionType.STRING, "guildname", "Name of the guild", true);
         jda.upsertCommand("guildranking", "Show the ranking of the current guild").addOptions(option1,option3).setGuildOnly(false).queue();
-
         jda.upsertCommand("register","register yourself to the database of the bot").setGuildOnly(false).queue();
 
     }
