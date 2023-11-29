@@ -183,6 +183,7 @@ public class AllEventListeners extends ListenerAdapter {
                 reponse.append(input);
             }
             in.close();
+            closeEverything(inputStream);
 
             String info = reponse.toString();
             JsonObject object = new JsonParser().parse(info).getAsJsonObject();
@@ -301,6 +302,9 @@ public class AllEventListeners extends ListenerAdapter {
 
 
 
+    }
+    public void closeEverything(InputStream is){
+        is.close();
     }
 }
 
