@@ -3,7 +3,7 @@ My first Java discord bot using JDA library
 Actually providing those commands :
 - /raider-io-character
 - /mythicplus
-- /guildtanking
+- /guildRanking
 
 These commands are using raider-io API to track the progression of a character or
 a guild in the game "World of Warcraft" 
